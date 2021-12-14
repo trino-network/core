@@ -1,0 +1,58 @@
+syntax = "proto3";
+package trinonetwork.core.marketplace;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "marketplace/params.proto";
+import "marketplace/node.proto";
+// this line is used by starport scaffolding # 1
+
+option go_package = "github.com/trino-network/core/x/marketplace/types";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Parameters queries the parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/trinonetwork/core/marketplace/params";
+  }
+  // Queries a node by id.
+	rpc Node(QueryGetNodeRequest) returns (QueryGetNodeResponse) {
+		option (google.api.http).get = "/trino-network/core/marketplace/node/{id}";
+	}
+
+	// Queries a list of node items.
+	rpc NodeAll(QueryAllNodeRequest) returns (QueryAllNodeResponse) {
+		option (google.api.http).get = "/trino-network/core/marketplace/node";
+	}
+
+// this line is used by starport scaffolding # 2
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetNodeRequest {
+	uint64 id = 1;
+}
+
+message QueryGetNodeResponse {
+	Node Node = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllNodeRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllNodeResponse {
+	repeated Node Node = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// this line is used by starport scaffolding # 3

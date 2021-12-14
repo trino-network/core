@@ -1,0 +1,14 @@
+syntax = "proto3";
+package trinonetwork.core.marketplace;
+
+option go_package = "github.com/trino-network/core/x/marketplace/types";
+
+message Node {
+  uint64 id = 1;
+  string ip = 2; 
+  string port = 3; 
+  string protocol = 4; 
+  string price = 5; 
+  string payload = 6; 
+  string creator = 7;
+}

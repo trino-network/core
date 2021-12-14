@@ -1,0 +1,17 @@
+syntax = "proto3";
+package trinonetwork.core.marketplace;
+
+import "gogoproto/gogo.proto";
+import "marketplace/params.proto";
+import "marketplace/node.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/trino-network/core/x/marketplace/types";
+
+// GenesisState defines the marketplace module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated Node nodeList = 2 [(gogoproto.nullable) = false];
+  uint64 nodeCount = 3;
+  // this line is used by starport scaffolding # genesis/proto/state
+}
