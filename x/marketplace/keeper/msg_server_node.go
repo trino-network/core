@@ -5,15 +5,10 @@ import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/trino-network/core/x/marketplace/types"
 )
 
 func (k msgServer) CreateNode(goCtx context.Context, msg *types.MsgCreateNode) (*types.MsgCreateNodeResponse, error) {
-
-	if err := k.isValidator(goCtx, msg.Creator); err != nil {
-		return nil, err
-	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -37,10 +32,6 @@ func (k msgServer) CreateNode(goCtx context.Context, msg *types.MsgCreateNode) (
 }
 
 func (k msgServer) UpdateNode(goCtx context.Context, msg *types.MsgUpdateNode) (*types.MsgUpdateNodeResponse, error) {
-
-	if err := k.isValidator(goCtx, msg.Creator); err != nil {
-		return nil, err
-	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -72,10 +63,6 @@ func (k msgServer) UpdateNode(goCtx context.Context, msg *types.MsgUpdateNode) (
 
 func (k msgServer) DeleteNode(goCtx context.Context, msg *types.MsgDeleteNode) (*types.MsgDeleteNodeResponse, error) {
 
-	if err := k.isValidator(goCtx, msg.Creator); err != nil {
-		return nil, err
-	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Checks that the element exists
@@ -92,20 +79,4 @@ func (k msgServer) DeleteNode(goCtx context.Context, msg *types.MsgDeleteNode) (
 	k.RemoveNode(ctx, msg.Id)
 
 	return &types.MsgDeleteNodeResponse{}, nil
-}
-
-func (k msgServer) isValidator(goCtx context.Context, addr string) error {
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	validatorAddr, err := sdk.ValAddressFromBech32(addr)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	// Check that the given validator exists
-	if val := k.stakingKeeper.Validator(ctx, validatorAddr); val == nil || !val.IsBonded() {
-		return sdkerrors.Wrapf(stakingtypes.ErrNoValidatorFound, "validator %s is not active set", validatorAddr.String())
-	}
-
-	return nil
 }
